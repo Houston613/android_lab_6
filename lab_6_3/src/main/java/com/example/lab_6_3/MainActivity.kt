@@ -1,7 +1,6 @@
 package com.example.lab_6_3
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.lab_6_3.databinding.ActivirtyMainBinding

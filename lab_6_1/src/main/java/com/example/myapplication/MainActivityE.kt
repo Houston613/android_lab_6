@@ -1,17 +1,21 @@
 package com.example.myapplication
 
+import android.app.Application
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.concurrent.Future
 
 class MainActivityE : AppCompatActivity() {
     private var secondsElapsed: Int = 0
     private val tag = "MainActivity"
     private lateinit var textSecondsElapsed: TextView
+    private lateinit var execFuture: Future<*>
     private lateinit var executorService: ExecutorService
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.run { putInt("timeStop", secondsElapsed) }
@@ -33,24 +37,26 @@ class MainActivityE : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        executorService.shutdown()
-        Log.i(tag, "Thread stopped")
+        execFuture.cancel(true)
         Log.i(tag, "MainActivity: stopped")
     }
 
     override fun onStart() {
         super.onStart()
-        executorService = Executors.newFixedThreadPool(1)
+        executorService = (application as MainApplication).executor
         executorService.execute {
-            while (!executorService.isShutdown) {
-                Thread.sleep(1000)
-                textSecondsElapsed.post {
-                    textSecondsElapsed.text = getString(R.string.second_elapsed, secondsElapsed++)
+            //Log.i(tag, "Thread started")
+            execFuture = executorService.submit {
+                while (!execFuture.isCancelled) {
+                    Thread.sleep(1000)
+                    textSecondsElapsed.post {
+                        textSecondsElapsed.text =
+                            getString(R.string.second_elapsed, ++secondsElapsed)
+                    }
                 }
             }
+            Log.i(tag, "MainActivity: started")
         }
-        Log.i(tag, "Thread started")
-        Log.i(tag, "MainActivity: started")
     }
 
 

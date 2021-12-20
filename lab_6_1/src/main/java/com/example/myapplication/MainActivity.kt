@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         backgroundThread.interrupt()
-        Log.i(tag, "Thread stopped")
+        Log.i(tag, "Thread interrupted")
         Log.i(tag, "MainActivity: stopped")
     }
     override fun onStart() {
@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 } catch (exception: InterruptedException){
                     Thread.currentThread().interrupt()
+                    Log.i(tag, "Thread interrupted in catch")
                 }
             }
         }

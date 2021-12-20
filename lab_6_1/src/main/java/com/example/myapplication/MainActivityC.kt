@@ -8,9 +8,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.myapplication.databinding.ActivityMainBinding
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class MainActivityC : AppCompatActivity() {
     private var secondsElapsed: Int = 0
@@ -42,7 +40,7 @@ class MainActivityC : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 while (isActive) {
                     delay(1000)
-                    binding.textSecondsElapsed.post {
+                    withContext(Dispatchers.Main) {
                         textSecondsElapsed.text =
                             getString(R.string.second_elapsed, secondsElapsed++)
                     }
