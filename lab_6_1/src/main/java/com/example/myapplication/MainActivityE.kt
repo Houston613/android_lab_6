@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
+import java.util.concurrent.FutureTask
 
 class MainActivityE : AppCompatActivity() {
     private var secondsElapsed: Int = 0
@@ -15,6 +16,7 @@ class MainActivityE : AppCompatActivity() {
     private lateinit var textSecondsElapsed: TextView
     private lateinit var execFuture: Future<*>
     private lateinit var executorService: ExecutorService
+    private lateinit var futureTask: FutureTask<Any>
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -44,19 +46,29 @@ class MainActivityE : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         executorService = (application as MainApplication).executor
-        executorService.execute {
-            //Log.i(tag, "Thread started")
+            Log.d(tag, "${Thread.currentThread()} execute")
             execFuture = executorService.submit {
+
+
+                Log.d(tag, "${Thread.currentThread()} submit")
+                (application as MainApplication).counter =
+                    (application as MainApplication).counter + 1
+                val temp = (application as MainApplication).counter
+                Log.i(tag, "thread started $temp")
+
+
                 while (!execFuture.isCancelled) {
                     Thread.sleep(1000)
                     textSecondsElapsed.post {
                         textSecondsElapsed.text =
                             getString(R.string.second_elapsed, ++secondsElapsed)
                     }
+                    Log.i(tag, "working")
                 }
+                Log.i(tag, "cancelled")
+
             }
-            Log.i(tag, "MainActivity: started")
-        }
+        Log.i(tag, "MainActivity: started ")
     }
 
 

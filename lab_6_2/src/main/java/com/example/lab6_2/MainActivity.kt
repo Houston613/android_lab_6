@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
                 binding.imageView.post {
                     binding.imageView.setImageBitmap(mIcon_val)
                 }
+                Log.i("test","cancel:")
                 execFuture.cancel(true)
             }
         }

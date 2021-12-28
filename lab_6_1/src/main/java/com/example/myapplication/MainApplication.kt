@@ -10,4 +10,5 @@ class MainApplication : Application() {
         Log.i("test","poll created")
     }
     val executor: ExecutorService = Executors.newFixedThreadPool(1)
+    var counter = 0;
 }

@@ -15,6 +15,7 @@ class MainActivityC : AppCompatActivity() {
     private val tag = "MainActivity"
     private lateinit var textSecondsElapsed: TextView
     private lateinit var binding: ActivityMainBinding
+    private lateinit var myJob: Job
 
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -36,7 +37,7 @@ class MainActivityC : AppCompatActivity() {
             binding.root
         )
         textSecondsElapsed = binding.textSecondsElapsed
-        lifecycleScope.launch {
+        myJob = lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 while (isActive) {
                     delay(1000)
@@ -50,32 +51,41 @@ class MainActivityC : AppCompatActivity() {
         }
     }
 
-        override fun onStop() {
-            super.onStop()
-
-            Log.i(tag, "MainActivity: stopped")
-        }
-
-        override fun onStart() {
-            super.onStart()
-            Log.i(tag, "MainActivity: started")
-        }
-
-
-        override fun onPause() {
-            super.onPause()
-            Log.i(tag, "MainActivity: Paused")
-
-        }
-
-        override fun onResume() {
-            super.onResume()
-            Log.i(tag, "MainActivity: resumed")
-        }
-
-
-        override fun onDestroy() {
-            super.onDestroy()
-            Log.i(tag, "MainActivity: destroyed")
-        }
+    override fun onStop() {
+        super.onStop()
+        Log.i("test", myJob.status())
+        Log.i("test", "MainActivity: stopped")
     }
+
+    override fun onStart() {
+        super.onStart()
+        Log.i("test", myJob.status())
+        Log.i("test", "MainActivity: started")
+    }
+
+
+    override fun onPause() {
+        super.onPause()
+        Log.i(tag, "MainActivity: Paused")
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.i(tag, "MainActivity: resumed")
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.i("test", myJob.status())
+        Log.i("test", "MainActivity: destroyed")
+    }
+
+    private fun Job.status(): String = when {
+        isCancelled -> "cancelled"
+        isActive -> "Active"
+        isCompleted -> "Complete"
+        else -> "Nothing"
+    }
+}
